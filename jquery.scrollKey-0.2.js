@@ -25,12 +25,17 @@
 		
         _.settings = {
         	'easeDef':'linear', 
-        	'toFrom':'to'
+        	'toFrom':'to',
+        	'debug':false
         }
 
         var init = function() {
             _.settings = $.extend({}, defaults, options);
             //docHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight)
+            if(_.settings.debug){
+            	var tracer = '<p id="skTrace" style="background-color:#000;color:#fff;position:fixed;left:0;top:0;padding:3px;" > tracer </p>'
+            	$('body').append(tracer);
+            }
             docHeight = $(document).height()
             windowHeight = $(window).height()
     
@@ -150,13 +155,15 @@
 								break thisKey;
 								
 							} else if (pos > key.frame && i == keys[obj].length-1) {//greater than all frames
-								console.log([pos, key.frame, nxt.frame])
-								//console.log("greater than all")
 								$(obj).stop().css(key.css);
 							}
 						}
 					}
 				}
+			}
+			if(_.settings.debug){
+				console.log(pos)
+				$('p#skTrace').html(pos+"px");
 			}
 		}
 		
@@ -164,24 +171,17 @@
 			var lerpval, aniObj = {}
 			if (prop.indexOf("color") >= 0){//color tween, must use lerpColor
 				lerpval = lerpColor(key.frame, nxt.frame, key['css'][prop].substring(1), nxt['css'][prop].substring(1))
-				//console.log(lerpval + " - " + pos);
 				aniObj[prop] = lerpval;
 				$(obj).stop(true, false).animate(aniObj, 'fast')
-				//$(obj).css(prop,lerpval)
 			} else if (prop.indexOf("position") >= 0){//position tween, must seperate x from y
 				var lerpX = lerp(key.frame, nxt.frame, key['css'][prop][0], nxt['css'][prop][0])
 				var lerpY = lerp(key.frame, nxt.frame, key['css'][prop][1], nxt['css'][prop][1])
 				
 				$(obj).stop(true, false).animate(prop, lerpX + "px "+lerpY+"px", 'fast');
-				
-				//$(obj).css(prop, lerpX + "px "+lerpY+"px");
 			} else {//regular tween
 				lerpval = lerp(key.frame, nxt.frame, key['css'][prop], nxt['css'][prop])
 				aniObj[prop] = lerpval
-				//console.log($(obj).css('margin-left')  + " - " + lerpval)
-				//console.log(aniObj)
 				$(obj).stop(true, false).animate(aniObj, 'fast')
-				//$(obj).css(prop,lerpval)
 			}
 		}
 		var iosTween = function (key, nxt, prop){
@@ -192,7 +192,6 @@
 			} else if (prop.indexOf("position") >= 0){//position tween, must seperate x from y
 				var lerpX = lerp(key.frame, nxt.frame, key['css'][prop][0], nxt['css'][prop][0])
 				var lerpY = lerp(key.frame, nxt.frame, key['css'][prop][1], nxt['css'][prop][1])
-				console.log(lerpX + " - " +lerpY);
 				//$(obj).animate("{"prop + ": (" + lerpX + "px " + lerpY + "px)}")
 				//$(obj).animate(prop, lerpX + "px "+lerpY+"px");
 				$(obj).css('-webkit-transform', 'translate3d('+lerpX+'px, '+lerpY+'px, 0)')
