@@ -4,8 +4,8 @@ jQuery-ScrollKey
 jQuery plugin for scroll-position based object keyframes.
 
 usage example:  
-<code>
-$(document).ready(function() {
+
+$(document).ready(function() {  
     // create a new instance of the scrollKey
     var sk = new $.scrollKey();
 
@@ -26,4 +26,3 @@ $(document).ready(function() {
     // print added keys to the log
 	sk.printKeys()
 });
-</code>
